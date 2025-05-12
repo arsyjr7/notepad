@@ -1,36 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoteApp</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<script>
-    let noteToDelete = null;
-  
-    function showConfirm(noteId) {
-      noteToDelete = noteId;
-      document.getElementById('confirmModal').style.display = 'block';
-    }
-  
-    function hideConfirm() {
-      document.getElementById('confirmModal').style.display = 'none';
-      noteToDelete = null;
-    }
-  
-    function deleteNote() {
-      if (noteToDelete !== null) {
-        window.location.href = "/delete/" + noteToDelete;
-      }
-    }
-  
-    // Menutup modal jika klik di luar kotak
-    window.onclick = function(event) {
-      const modal = document.getElementById('confirmModal');
-      if (event.target === modal) {
-        hideConfirm();
-      }
-    }
-</script>  
 <body>
     <h1>NoteApp - Catatan Online</h1>
 
@@ -50,17 +25,46 @@
             </li>
         {% endfor %}
     </ul>
-<!-- Modal Konfirmasi -->
-<div id="confirmModal" class="modal">
-    <div class="modal-content">
-      <p>Yakin ingin menghapus catatan ini?</p>
-      <div class="modal-actions">
-        <button onclick="deleteNote()" class="btn-yes">Yakin</button>
-        <button onclick="hideConfirm()" class="btn-no">Batal</button>
-      </div>
+
+    <!-- Modal Konfirmasi -->
+    <div id="confirmModal" class="modal" aria-labelledby="confirmModalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <h2 id="confirmModalTitle">Yakin ingin menghapus catatan ini?</h2>
+            <div class="modal-actions">
+                <button onclick="deleteNote()" class="btn-yes">Yakin</button>
+                <button onclick="hideConfirm()" class="btn-no">Batal</button>
+            </div>
+        </div>
     </div>
-  </div>
-      
-    
+
+    <script>
+        let noteToDelete = null;
+
+        function showConfirm(noteId) {
+            noteToDelete = noteId;
+            document.getElementById('confirmModal').style.display = 'block';
+            document.getElementById('confirmModal').setAttribute('aria-hidden', 'false');
+        }
+
+        function hideConfirm() {
+            document.getElementById('confirmModal').style.display = 'none';
+            document.getElementById('confirmModal').setAttribute('aria-hidden', 'true');
+            noteToDelete = null;
+        }
+
+        function deleteNote() {
+            if (noteToDelete !== null) {
+                window.location.href = "/delete/" + noteToDelete;
+            }
+        }
+
+        // Menutup modal jika klik di luar kotak
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target === modal) {
+                hideConfirm();
+            }
+        });
+    </script>
 </body>
 </html>
