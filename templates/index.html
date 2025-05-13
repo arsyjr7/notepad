@@ -2,69 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteApp</title>
+    <title>Note App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>NoteApp - Catatan Online</h1>
-
-    <form method="POST">
-        <textarea name="note" rows="4" cols="50" placeholder="Tulis catatan di sini..." required></textarea><br><br>
-        <button type="submit">Simpan</button>
-    </form>
-
-    <hr>
-
-    <h2>Catatan Kamu:</h2>
-    <ul>
-        {% for note in notes %}
-            <li>
-                {{ note[1] }}
-                <button class="delete-btn" onclick="showConfirm({{ note[0] }})">Hapus</button>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <!-- Modal Konfirmasi -->
-    <div id="confirmModal" class="modal" aria-labelledby="confirmModalTitle" aria-hidden="true">
-        <div class="modal-content">
-            <h2 id="confirmModalTitle">Yakin ingin menghapus catatan ini?</h2>
-            <div class="modal-actions">
-                <button onclick="deleteNote()" class="btn-yes">Yakin</button>
-                <button onclick="hideConfirm()" class="btn-no">Batal</button>
-            </div>
-        </div>
+    <div class="container">
+        <h1>Note App</h1>
+        <form method="POST">
+            <input type="text" name="note" placeholder="Tulis catatan..." required>
+            <button type="submit">Tambah</button>
+        </form>
+        <ul class="note-list">
+            {% for note in notes %}
+                <li>
+                    {{ note.text }}
+                    <a href="{{ url_for('delete_note', note_id=note.id) }}" class="delete-button">Hapus</a>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
-
-    <script>
-        let noteToDelete = null;
-
-        function showConfirm(noteId) {
-            noteToDelete = noteId;
-            document.getElementById('confirmModal').style.display = 'block';
-            document.getElementById('confirmModal').setAttribute('aria-hidden', 'false');
-        }
-
-        function hideConfirm() {
-            document.getElementById('confirmModal').style.display = 'none';
-            document.getElementById('confirmModal').setAttribute('aria-hidden', 'true');
-            noteToDelete = null;
-        }
-
-        function deleteNote() {
-            if (noteToDelete !== null) {
-                window.location.href = "/delete/" + noteToDelete;
-            }
-        }
-
-        // Menutup modal jika klik di luar kotak
-        document.addEventListener('click', function(event) {
-            const modal = document.getElementById('confirmModal');
-            if (event.target === modal) {
-                hideConfirm();
-            }
-        });
-    </script>
 </body>
 </html>
